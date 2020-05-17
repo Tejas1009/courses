@@ -1,0 +1,68 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CoinChange
+{
+    class Program
+    {
+        public static void CalculateKnapsackFraction(IList<Knapsack> loot, double maxValue, int e)
+        {
+            int i = 0;
+            double calculatedWeight = 0.0;
+            foreach (var l in loot.OrderByDescending(x=>x.ratio))
+            {
+                if (l.value <= maxValue)
+                {
+                    calculatedWeight += l.weight;
+                    maxValue = maxValue - l.value;
+                }
+                else
+                {
+                    var d = (double)(l.value / maxValue);
+                    calculatedWeight += (double)l.weight / d;
+
+                    break;
+                }
+                if(maxValue <=0)
+                    break;
+            }
+
+            Console.WriteLine(Math.Round(calculatedWeight, 4));
+            //Console.ReadLine();
+        }
+
+        static void Main(string[] args)
+        {
+            var data = Console.ReadLine();
+            var inputData = data.Split(' ');
+            var numberofItems = int.Parse(inputData[0]);
+            var maxWeight = double.Parse(inputData[1]);
+
+            var knapsackList = new List<Knapsack>();
+
+            for (int i = 0; i < numberofItems; i++)
+            {
+                data = Console.ReadLine();
+                inputData = data.Split(' ');
+                knapsackList.Add(new Knapsack()
+                {
+                    weight = double.Parse(inputData[0]),
+                    value = int.Parse(inputData[1]),
+                    ratio = int.Parse(inputData[0])/int.Parse(inputData[1])
+                });
+            }
+
+            CalculateKnapsackFraction(knapsackList, maxWeight, numberofItems);
+        }
+    }
+
+    public class Knapsack
+    {
+        public double weight;
+        public int value;
+        public int ratio;
+    }
+}
